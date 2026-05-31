@@ -8,7 +8,11 @@ const policyRoutes = require('./routes/policyRoutes');
 const app = express();
 
 // Middleware
-const allowedOrigins = ['http://localhost:5173', process.env.FRONTEND_URL].filter(Boolean);
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://insuredmine-client.onrender.com',
+  process.env.FRONTEND_URL
+].filter(Boolean);
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.ngrok-free.app')) {
