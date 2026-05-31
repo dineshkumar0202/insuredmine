@@ -3,6 +3,10 @@ const xlsx = require('xlsx');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
+const dns = require('dns');
+
+// Override DNS servers to Google DNS to resolve MongoDB SRV records properly
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
