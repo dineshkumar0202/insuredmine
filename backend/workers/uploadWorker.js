@@ -41,7 +41,10 @@ async function processFile() {
     for (let i = 0; i < rawData.length; i++) {
       const row = {};
       for (const key in rawData[i]) {
-        row[key.toLowerCase().trim()] = rawData[i][key];
+        // Strip ALL spaces, underscores, hyphens, and special chars so
+        // "Policy Number", "policy_number", "Policy-Number" → "policynumber"
+        const normalizedKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
+        row[normalizedKey] = rawData[i][key];
       }
 
       const email = row['email'] || '';
