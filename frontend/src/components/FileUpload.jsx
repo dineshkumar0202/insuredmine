@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from '../api/axios';
+import { useToast } from '../context/ToastContext';
 
 const FileUpload = ({ onUploadSuccess }) => {
   const [file, setFile] = useState(null);
@@ -7,6 +8,7 @@ const FileUpload = ({ onUploadSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const { showToast } = useToast();
 
   const validateFile = (selectedFile) => {
     if (selectedFile) {
@@ -17,6 +19,7 @@ const FileUpload = ({ onUploadSuccess }) => {
       } else {
         setFile(null);
         setError('Only .xlsx and .csv files are allowed.');
+        showToast('Only .xlsx and .csv files are allowed.', 'error');
       }
     }
   };
@@ -60,16 +63,22 @@ const FileUpload = ({ onUploadSuccess }) => {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       if (response.data.success) {
-        setMessage(`${response.data.inserted || 0} policy records uploaded and processed successfully!`);
+        const msg = `${response.data.inserted || 0} policy records uploaded and processed successfully!`;
+        setMessage(msg);
         setFile(null);
+        showToast(msg, 'success', 5000);
         if (onUploadSuccess) {
           onUploadSuccess(); // Refresh stats counters
         }
       } else {
-        setError(response.data.message || 'Upload failed');
+        const errMsg = response.data.message || 'Upload failed';
+        setError(errMsg);
+        showToast(errMsg, 'error');
       }
     } catch (err) {
-      setError(err.response?.data?.message || err.message || 'Error uploading file');
+      const errMsg = err.response?.data?.message || err.message || 'Error uploading file';
+      setError(errMsg);
+      showToast(errMsg, 'error');
     } finally {
       setLoading(false);
     }
